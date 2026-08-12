@@ -23,16 +23,16 @@ class ChatMessagePart {
 }
 
 class ChatMessageModel {
-  ChatMessageModel({required this.parts, this.role});
+  ChatMessageModel({required this.parts, required this.role});
 
-  final String? role;
+  final String role;
   final List<ChatMessagePart> parts;
 
   factory ChatMessageModel.fromJson(Map<String, dynamic> json) {
-    final partsJson = json['parts'] as List<dynamic>? ?? <dynamic>[];
+    final partsJson = json['parts'] as List? ?? [];
 
     return ChatMessageModel(
-      role: json['role'] as String?,
+      role: json['role'] as String,
       parts: partsJson
           .map((item) => ChatMessagePart.fromJson(item as Map<String, dynamic>))
           .toList(),
@@ -41,13 +41,24 @@ class ChatMessageModel {
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{
+      'role': role,
       'parts': parts.map((part) => part.toJson()).toList(),
     };
 
-    if (role != null) {
-      data['role'] = role;
-    }
-
     return data;
+  }
+
+  factory ChatMessageModel.user(String text) {
+    return ChatMessageModel(
+      role: 'user',
+      parts: [ChatMessagePart(text: text)],
+    );
+  }
+
+  factory ChatMessageModel.model(String text) {
+    return ChatMessageModel(
+      role: 'model',
+      parts: [ChatMessagePart(text: text)],
+    );
   }
 }

@@ -26,13 +26,27 @@ class GeminiChatService {
   final ApiClient _apiClient;
 
   Future<ChatMessageModel> sendMessages(List<ChatMessageModel> messages) async {
-    final response = await _apiClient.post(
+    final response = await _apiClient.post<Map<String, dynamic>>(
       '',
       data: {'contents': messages.map((message) => message.toJson()).toList()},
     );
 
     final body = response.data;
+    if (body == null) {
+      throw Exception('Gemini response contained no body.');
+    }
 
-    return ChatMessageModel.fromJson(body);
+    final candidates = body['candidates'] as List<dynamic>?;
+    if (candidates == null || candidates.isEmpty) {
+      throw Exception('Gemini response contained no candidates.');
+    }
+
+    final firstCandidate = candidates.first as Map<String, dynamic>;
+    final content = firstCandidate['content'] as Map<String, dynamic>?;
+    if (content == null) {
+      throw Exception('Gemini response candidate had no content.');
+    }
+
+    return ChatMessageModel.fromJson(content);
   }
 }
