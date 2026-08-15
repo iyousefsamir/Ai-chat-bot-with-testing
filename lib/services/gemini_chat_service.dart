@@ -1,3 +1,4 @@
+import 'package:ai_chat_bot_with_testing/constants/api_key.dart';
 import 'package:dio/dio.dart';
 
 import '../models/chat_message_model.dart';
@@ -5,7 +6,7 @@ import 'api_client.dart';
 
 class GeminiChatService {
   GeminiChatService({
-    required String apiKey,
+    String apiKey = geminiApiKey,
     ApiClient? apiClient,
     String baseUrl =
         'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent',

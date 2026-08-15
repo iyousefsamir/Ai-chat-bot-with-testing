@@ -1,10 +1,13 @@
+import 'package:ai_chat_bot_with_testing/cubit/send_message_cubit.dart';
+import 'package:ai_chat_bot_with_testing/models/chat_message_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../utils/chat_colors.dart';
 
 class MessageInput extends StatefulWidget {
-  const MessageInput({super.key});
-
+  const MessageInput({super.key, required this.messages});
+  final List<ChatMessageModel> messages;
   @override
   State<MessageInput> createState() => _MessageInputState();
 }
@@ -25,8 +28,13 @@ class _MessageInputState extends State<MessageInput> {
   }
 
   void _sendMessage() {
-    // Send message logic here
+    final text = _controller.text.trim();
+
+    if (text.isEmpty) return;
+
+    widget.messages.add(ChatMessageModel.user(text));
     _controller.clear();
+    context.read<SendMessageCubit>().sendMessages(widget.messages);
   }
 
   @override
@@ -47,45 +55,53 @@ class _MessageInputState extends State<MessageInput> {
   }
 
   Widget _buildInputField() {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 12,
-      ),
-      decoration: BoxDecoration(
-        color: ChatColors.inputBackground,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: Colors.grey.withValues(alpha: 0.2),
-          width: 1,
+    return TextField(
+      controller: _controller,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(
+            color: Colors.grey.withValues(alpha: 0.2),
+            width: 1,
+          ),
         ),
-      ),
-      child: TextField(
-        controller: _controller,
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          hintText: 'Write your message',
-          hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-          isDense: true,
-          contentPadding: EdgeInsets.zero,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(
+            color: Colors.grey.withValues(alpha: 0.2),
+            width: 1,
+          ),
         ),
-        minLines: 1,
-        maxLines: 4,
-        style: const TextStyle(fontSize: 14),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: const BorderSide(color: ChatColors.primary, width: 1.5),
+        ),
+        filled: true,
+        fillColor: ChatColors.inputBackground,
+        hintText: 'Write your message',
+        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+        isDense: true,
       ),
+      minLines: 1,
+      maxLines: 4,
+      style: const TextStyle(fontSize: 14),
     );
   }
 
   Widget _buildSendButton() {
     return Container(
       decoration: const BoxDecoration(
-        color: ChatColors.primary,
+        color: ChatColors.onPrimary,
         shape: BoxShape.circle,
       ),
       child: IconButton(
         onPressed: _sendMessage,
-        color: ChatColors.onPrimary,
-        icon: const Icon(Icons.arrow_upward, size: 20),
+        color: ChatColors.primary,
+        icon: const Icon(Icons.send_rounded, size: 20),
       ),
     );
   }

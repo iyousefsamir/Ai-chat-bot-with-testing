@@ -1,11 +1,12 @@
+import 'package:ai_chat_bot_with_testing/models/chat_message_model.dart';
 import 'package:flutter/material.dart';
 
 import 'chat_bubble.dart';
 
 class ChatList extends StatelessWidget {
-  const ChatList({Key? key, required this.messages}) : super(key: key);
+  const ChatList({super.key, required this.messages});
 
-  final List<Map<String, String>> messages;
+  final List<ChatMessageModel> messages;
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +15,9 @@ class ChatList extends StatelessWidget {
       itemCount: messages.length,
       itemBuilder: (context, index) {
         final msg = messages[index];
-        final isMe = msg['role'] == 'user';
-        return ChatBubble(text: msg['text'] ?? '', isMe: isMe);
+        final isMe = msg.role == 'user';
+
+        return ChatBubble(text: msg.parts.first.text, isMe: isMe);
       },
     );
   }
