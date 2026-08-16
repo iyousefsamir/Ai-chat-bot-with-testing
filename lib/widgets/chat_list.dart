@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'chat_bubble.dart';
 
-class ChatList extends StatelessWidget {
-  const ChatList({super.key, required this.messages});
+class ChatMessageList extends StatelessWidget {
+  const ChatMessageList({super.key, required this.messages});
 
   final List<ChatMessageModel> messages;
 

@@ -1,4 +1,5 @@
 import 'package:ai_chat_bot_with_testing/constants/api_key.dart';
+
 import 'package:dio/dio.dart';
 
 import '../models/chat_message_model.dart';
@@ -32,21 +33,10 @@ class GeminiChatService {
       data: {'contents': messages.map((message) => message.toJson()).toList()},
     );
 
-    final body = response.data;
-    if (body == null) {
-      throw Exception('Gemini response contained no body.');
-    }
+    final body = response.data!;
 
-    final candidates = body['candidates'] as List<dynamic>?;
-    if (candidates == null || candidates.isEmpty) {
-      throw Exception('Gemini response contained no candidates.');
-    }
-
-    final firstCandidate = candidates.first as Map<String, dynamic>;
-    final content = firstCandidate['content'] as Map<String, dynamic>?;
-    if (content == null) {
-      throw Exception('Gemini response candidate had no content.');
-    }
+    final content =
+        (body['candidates'] as List).first['content'] as Map<String, dynamic>;
 
     return ChatMessageModel.fromJson(content);
   }
