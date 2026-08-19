@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../models/chat_message_model.dart';
 import '../utils/chat_colors.dart';
 
 class ChatBubble extends StatelessWidget {
-  const ChatBubble({Key? key, required this.text, this.isMe = false})
-    : super(key: key);
+  const ChatBubble({Key? key, required this.message}) : super(key: key);
 
-  final String text;
-  final bool isMe;
+  final ChatMessageModel message;
 
   @override
   Widget build(BuildContext context) {
+    final isMe = message.role == 'user';
     final radius = Radius.circular(18);
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -30,7 +30,7 @@ class ChatBubble extends StatelessWidget {
           ),
         ),
         child: Text(
-          text,
+          message.parts.first.text,
           style: TextStyle(
             color: isMe ? ChatColors.onPrimary : Colors.black87,
             fontSize: 15,

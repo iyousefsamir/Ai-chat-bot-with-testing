@@ -18,6 +18,7 @@ class SendMessageCubit extends Cubit<SendMessageState> {
       final message = await _repository.sendMessages(messages);
       emit(SendMessageSuccess(message));
     } catch (error) {
+      print('ERROR: $error');
       emit(SendMessageFailure(error.toString()));
     }
   }

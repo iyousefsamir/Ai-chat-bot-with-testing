@@ -1,4 +1,5 @@
 import 'package:ai_chat_bot_with_testing/cubit/send_message_cubit.dart';
+import 'package:ai_chat_bot_with_testing/cubit/send_message_state.dart';
 import 'package:ai_chat_bot_with_testing/models/chat_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,8 +30,10 @@ class _MessageInputState extends State<MessageInput> {
 
   void _sendMessage() {
     final text = _controller.text.trim();
-
     if (text.isEmpty) return;
+    if (context.read<SendMessageCubit>().state is SendMessageFailure) {
+      widget.messages.removeLast();
+    }
 
     widget.messages.add(ChatMessageModel.user(text));
     _controller.clear();

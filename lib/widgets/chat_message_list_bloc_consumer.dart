@@ -8,7 +8,9 @@ import 'chat_list.dart';
 
 class ChatMessageListBlocConsumer extends StatelessWidget {
   const ChatMessageListBlocConsumer({super.key, required this.messages});
+
   final List<ChatMessageModel> messages;
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SendMessageCubit, SendMessageState>(
@@ -18,6 +20,20 @@ class ChatMessageListBlocConsumer extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        if (state is SendMessageLoading) {
+          return LoadingChatMessageList(messages: messages);
+        }
+
+        if (state is SendMessageFailure) {
+          print('FAILURE STATE: ${state.error}');
+          return FailureChatMessageList(
+            messages: messages,
+            onRetry: () {
+              context.read<SendMessageCubit>().sendMessages(messages);
+            },
+          );
+        }
+
         return ChatMessageList(messages: messages);
       },
     );
